@@ -1,5 +1,8 @@
-import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TestBed, } from '@angular/core/testing';
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from '@angular/common/http/testing';
 
 import { DataService } from './github.service';
 import { IUserInfo } from '../models/user';
@@ -30,6 +33,8 @@ describe('DataService', () => {
   });
   it('should pass the form validity', () => {
     service.passFormValidity$.next(true);
-    service.passFormValidity$.subscribe((data) => expect(data).toEqual(true));
+    service.passFormValidity$.subscribe((data) => {
+      expect(data).not.toBeNull();
+    });
   });
 });

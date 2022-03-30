@@ -1,5 +1,12 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewEncapsulation,
+} from '@angular/core';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { DataService } from './service/github.service';
 
 @Component({
@@ -8,31 +15,47 @@ import { DataService } from './service/github.service';
   styleUrls: ['./app.component.scss'],
   encapsulation: ViewEncapsulation.None,
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   title = 'Home Day Assessment';
   routerDictionary = ['/home', '/user', '/user-terms', '/user-details'];
   disableBackNavigation = true;
-  disableForwardNavigation = false;
-  constructor(private dataService: DataService, private router: Router) {}
+  disableForwardNavigation: boolean;
+  formValiditySubscription = Subscription.EMPTY;
+  constructor(
+    private dataService: DataService,
+    public router: Router,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
-    this.dataService.broadcastFormValidity$.subscribe((data) => {
-      this.disableForwardNavigation = this.router.url === '/' ? false : data;
-    });
+    this.formValiditySubscription =
+      this.dataService.broadcastFormValidity$.subscribe(() => {
+        const userInfo = JSON.parse(localStorage.getItem('user'));
+        const userTerms = JSON.parse(localStorage.getItem('userTerms'));
+
+        if (this.router.url === this.routerDictionary[1]) {
+          this.setForwardNavigationStatus(userInfo);
+        }
+        if (this.router.url === this.routerDictionary[2]) {
+          this.setForwardNavigationStatus(userTerms);
+        }
+      });
   }
 
-  applyDisableClass(src: string) {
-    this.disableForwardNavigation = src === '/user-details';
-    this.disableBackNavigation = src === '/home';
+  /**
+   * Disable Forward Navigation based on Storage
+   */
+  setForwardNavigationStatus(userInformation) {
+    this.disableForwardNavigation = userInformation ? false : true;
+    this.cdr.detectChanges();
   }
-
   /**
    * Move Forward Navigation
    */
   forwardNavigation() {
     const navigateNextURL = this.getNavigationURLDetails(true);
-    this.applyDisableClass(navigateNextURL);
-    this.disableForwardNavigation = true;
+    this.disableBackNavigation = false;
+    this.disableForwardNavigation = navigateNextURL === '/user-details';
     this.router.navigate([navigateNextURL]);
   }
   /**
@@ -40,7 +63,7 @@ export class AppComponent implements OnInit {
    */
   backNavigation() {
     const navigateBackURL = this.getNavigationURLDetails(false);
-    this.applyDisableClass(navigateBackURL);
+    this.disableBackNavigation = navigateBackURL === '/home';
     this.router.navigate([navigateBackURL]);
   }
   /**
@@ -56,5 +79,11 @@ export class AppComponent implements OnInit {
     return currentRouteIndex > -1
       ? getNavigationRoute
       : this.routerDictionary[0];
+  }
+
+  ngOnDestroy(): void {
+    localStorage.removeItem('user');
+    localStorage.removeItem('userTerms');
+    this.formValiditySubscription.unsubscribe();
   }
 }

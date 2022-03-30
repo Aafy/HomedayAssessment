@@ -1,47 +1,53 @@
 <div class="user-terms__container animation__container">
-    <h4>User Terms and Condition</h4>
-    <form [formGroup]="userTermsForm">
-      <div class="user-terms__input">
-        <strong>User Email: </strong>
-        <input type="email" name="email" formControlName="userEmail" />
-        <div
-          class="error__infoMessage"
-          *ngIf="
-            userTermsForm.get('userEmail').errors &&
-            userTermsForm.get('userEmail').errors.required &&
-            userTermsForm.get('userEmail').touched
-          "
-        >
-          This field is required!!!
-        </div>
-        <div
-          class="error__infoMessage"
-          *ngIf="
-            userTermsForm.get('userEmail').errors &&
-            userTermsForm.get('userEmail').errors.email &&
-            userTermsForm.get('userEmail').touched
-          "
-        >
-          Please enter valid email Address!!!
-        </div>
+  <h4>User Terms and Condition</h4>
+  <form [formGroup]="userTermsForm">
+    <div class="user-terms__input">
+      <strong>User Email: </strong>
+      <input
+        type="email"
+        name="email"
+        [(ngModel)]="userEmail"
+        formControlName="userEmail"
+      />
+      <div
+        class="error__infoMessage"
+        *ngIf="
+          userTermsForm.get('userEmail').errors &&
+          userTermsForm.get('userEmail').errors.required &&
+          userTermsForm.get('userEmail').touched
+        "
+      >
+        This field is required!!!
       </div>
-      <div class="user-terms__input">
-        <input
-          type="checkbox"
-          name="termsAndCondition"
-          formControlName="termsAndCondition"
-        />
-        <strong>Agree with terms and services</strong>
-        <div
-          class="error__infoMessage"
-          *ngIf="
-            userTermsForm.get('termsAndCondition').errors &&
-            userTermsForm.get('termsAndCondition').touched
-          "
-        >
-          This field is required!!!
-        </div>
+      <div
+        class="error__infoMessage"
+        *ngIf="
+          userTermsForm.get('userEmail').errors &&
+          userTermsForm.get('userEmail').errors.email &&
+          userTermsForm.get('userEmail').touched
+        "
+      >
+        Please enter valid email Address!!!
       </div>
-    </form>
     </div>
-    
+    <div class="user-terms__input">
+      <input
+        type="checkbox"
+        name="termsAndCondition"
+        [(ngModel)]="termsAndCondition"
+        formControlName="termsAndCondition"
+      />
+      <strong>Agree with terms and services</strong>
+      <div
+        class="error__infoMessage"
+        *ngIf="
+          userTermsForm.get('termsAndCondition').errors &&
+          userTermsForm.get('termsAndCondition').touched
+        "
+      >
+        This field is required!!!
+      </div>
+    </div>
+  </form>
+  </div>
+  

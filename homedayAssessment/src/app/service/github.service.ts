@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { IUser, IUserGitDetails, IUserInfo } from '../models/user';
 
 @Injectable({
@@ -8,8 +8,8 @@ import { IUser, IUserGitDetails, IUserInfo } from '../models/user';
 })
 export class DataService {
   passFormValidity$ = new Subject<boolean>();
-  broadcastFormValidity$ = new BehaviorSubject<boolean>(true);
-  test$ = new Subject<IUserInfo>();
+  broadcastFormValidity$ = new Subject<boolean>();
+
   userInformation: IUser = {
     userDetails: {
       githubUserName: '',
@@ -33,7 +33,6 @@ export class DataService {
 
   saveUserDetails(data: IUserInfo) {
     this.userInformation.userDetails = data;
-    this.test$.next(data);
   }
   getUser() {
     const userName = this.userInformation.userDetails.githubUserName;

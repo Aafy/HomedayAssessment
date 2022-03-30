@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { IUserGitDetails } from '../models/user';
 import { DataService } from '../service/github.service';
 
@@ -7,9 +8,10 @@ import { DataService } from '../service/github.service';
   templateUrl: './user-details.component.html',
   styleUrls: ['./user-details.component.scss'],
 })
-export class UserDetailsComponent implements OnInit {
+export class UserDetailsComponent implements OnInit, OnDestroy {
   user: IUserGitDetails;
   isLoading = true;
+  userDataSubscription = Subscription.EMPTY;
   constructor(private dataService: DataService) {}
 
   ngOnInit(): void {
@@ -17,7 +19,7 @@ export class UserDetailsComponent implements OnInit {
   }
 
   getUserDetails() {
-    this.dataService.getUser().subscribe(
+    this.userDataSubscription = this.dataService.getUser().subscribe(
       (data) => {
         this.user = data;
         this.isLoading = false;
@@ -27,5 +29,8 @@ export class UserDetailsComponent implements OnInit {
         this.isLoading = false;
       }
     );
+  }
+  ngOnDestroy(): void {
+    this.userDataSubscription.unsubscribe();
   }
 }

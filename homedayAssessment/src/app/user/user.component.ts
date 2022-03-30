@@ -1,5 +1,7 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Subscription } from 'rxjs';
+import { IUserInfo } from '../models/user';
 import { DataService } from '../service/github.service';
 
 @Component({
@@ -8,13 +10,13 @@ import { DataService } from '../service/github.service';
   styleUrls: ['./user.component.scss'],
   encapsulation: ViewEncapsulation.None,
 })
-export class UserComponent implements OnInit {
+export class UserComponent implements OnInit, OnDestroy {
   userForm: FormGroup;
 
   firstName: string = '';
   lastName: string = '';
   gitUserName: string = '';
-
+  userFormSubscription = Subscription.EMPTY;
   constructor(
     private formBuilder: FormBuilder,
     private dataService: DataService
@@ -23,12 +25,22 @@ export class UserComponent implements OnInit {
   ngOnInit(): void {
     this.initializeForm();
 
-    this.userForm.valueChanges.subscribe((data) => {
+    this.userFormSubscription = this.userForm.valueChanges.subscribe((data) => {
       if (this.userForm.valid) {
         this.dataService.saveUserDetails(data);
+        localStorage.setItem('user', JSON.stringify(data));
       }
-      this.dataService.passFormValidity$.next(this.userForm.invalid);
+
+      this.dataService.passFormValidity$.next(
+        this.isFieldEmpty(data) && this.userForm.invalid
+      );
     });
+    const userData = JSON.parse(localStorage.getItem('user'));
+    if (userData) {
+      this.firstName = userData.firstName;
+      this.lastName = userData.lastName;
+      this.gitUserName = userData.githubUserName;
+    }
   }
 
   initializeForm() {
@@ -37,5 +49,16 @@ export class UserComponent implements OnInit {
       lastName: [this.lastName, Validators.required],
       githubUserName: [this.gitUserName, Validators.required],
     });
+  }
+
+  isFieldEmpty(formValue: IUserInfo) {
+    return (
+      formValue.firstName === '' ||
+      formValue.lastName === '' ||
+      formValue.githubUserName === ''
+    );
+  }
+  ngOnDestroy() {
+    this.userFormSubscription.unsubscribe();
   }
 }

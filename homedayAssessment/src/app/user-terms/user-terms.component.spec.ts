@@ -33,4 +33,12 @@ describe('UserTermsComponent', () => {
       expect(component.userTermsForm.invalid).toBeTruthy();
     });
   });
+
+  it('should validate the form correctness', () => {
+    component.userTermsForm.patchValue({
+      userEmail: 'test@mock.com',
+      termsAndCondition: true,
+    });
+    expect(component.userTermsForm.valid).toBeTruthy();
+  });
 });
