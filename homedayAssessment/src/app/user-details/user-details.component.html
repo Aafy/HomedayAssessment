@@ -1,0 +1,35 @@
+<div class="user-details">
+    <div
+      class="user-details__container animation__container"
+      *ngIf="!isLoading; else loadingTemplate"
+    >
+      <ng-container *ngIf="user; else noUser">
+        <h4>User Details</h4>
+        <div *ngIf="user.avatar_url">
+          <img style="width: 230px" [src]="user.avatar_url" alt="GitHub Image" />
+        </div>
+    
+        <div *ngIf="user.login"><strong>Login:</strong> {{ user.login }}</div>
+        <div *ngIf="user.name"><strong>Name:</strong> {{ user.name }}</div>
+        <div *ngIf="user.blog"><strong>Blog :</strong> {{ user.blog }}</div>
+        <div *ngIf="user.followers">
+          <strong>Followers:</strong> {{ user.followers }}
+        </div>
+        <div *ngIf="user.created_at">
+          <strong>Created At:</strong> {{ user.created_at }}
+        </div>
+      </ng-container>
+    </div>
+    </div>
+    
+    <ng-template #loadingTemplate>
+    <div class="user-details__info">Loading.........</div>
+    </ng-template>
+    <ng-template #noUser>
+    <div class="user-details__info">
+      OOPS!!! No User Found with the provided GitHub User Name!!
+      <br />
+      Please go back and provide valid GitHub Username.
+    </div>
+    </ng-template>
+    

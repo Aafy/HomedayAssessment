@@ -1,0 +1,13 @@
+.welcome {
+    &__message {
+      font-weight: 600;
+      color: darkslateblue;
+    }
+    &__container {
+      display: flex;
+      justify-content: center;
+      height: calc(100vh - 77px);
+      padding: 8px;
+    }
+  }
+  

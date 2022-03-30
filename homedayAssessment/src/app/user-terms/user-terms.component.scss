@@ -1,0 +1,11 @@
+.user-terms {
+    &__container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    &__input {
+      margin: 70px 0;
+    }
+  }
+  

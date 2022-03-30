@@ -1,0 +1,51 @@
+<div class="user-info__container animation__container">
+    <h4>User Details Form</h4>
+    <form [formGroup]="userForm">
+      <div class="user-info__input">
+        First Name:<input
+          type="text"
+          name="firstName"
+          [value]="firstName"
+          formControlName="firstName"
+        />
+        <div
+          class="error__infoMessage"
+          *ngIf="
+            userForm.get('firstName').touched && userForm.get('firstName').errors
+          "
+        >
+          This field is required!!!
+        </div>
+      </div>
+      <div class="user-info__input">
+        Last Name:<input type="text" name="lastName" formControlName="lastName" />
+        <div
+          class="error__infoMessage"
+          *ngIf="
+            userForm.get('lastName').touched && userForm.get('lastName').errors
+          "
+        >
+          This field is required!!!
+        </div>
+      </div>
+    
+      <div class="user-info__input">
+        GitHub User Name:<input
+          type="text"
+          name="githubUserName"
+          formControlName="githubUserName"
+        />
+    
+        <div
+          class="error__infoMessage"
+          *ngIf="
+            userForm.get('githubUserName').touched &&
+            userForm.get('githubUserName').errors
+          "
+        >
+          This field is required!!!
+        </div>
+      </div>
+    </form>
+    </div>
+    
